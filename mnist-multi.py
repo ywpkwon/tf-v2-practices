@@ -3,13 +3,15 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import tensorflow_datasets as tfds
 import tensorflow as tf
 import os
+from termcolor import colored, cprint
+
 
 datasets, info = tfds.load(name='mnist', with_info=True, as_supervised=True)
 
 mnist_train, mnist_test = datasets['train'], datasets['test']
 
 strategy = tf.distribute.MirroredStrategy()
-print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
+cprint('Number of devices: {}'.format(strategy.num_replicas_in_sync), 'red')
 
 # You can also do info.splits.total_num_examples to get the total
 # number of examples in the dataset.
@@ -21,6 +23,8 @@ BUFFER_SIZE = 10000
 
 BATCH_SIZE_PER_REPLICA = 64
 BATCH_SIZE = BATCH_SIZE_PER_REPLICA * strategy.num_replicas_in_sync
+cprint('Batch size: {}'.format(BATCH_SIZE), 'red')
+
 
 def scale(image, label):
   image = tf.cast(image, tf.float32)
